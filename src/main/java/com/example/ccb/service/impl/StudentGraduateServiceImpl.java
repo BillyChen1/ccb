@@ -102,8 +102,15 @@ public class StudentGraduateServiceImpl extends ServiceImpl<StudentGraduateMappe
         if (university.equals(graduateInfo.getUniversity())
             && identityNum.equals(graduateInfo.getIdentityNum())) {
             //还需要和数据库的信息进行对比，如果不一致说明存在篡改风险
-
-            return graduateInfo;
+            graduateInfo.setSignStatus(SignStatus.STUDENT_SIGN);
+            StudentGraduate dbInfo = studentGraduateMapper.selectOne(
+                    new QueryWrapper<StudentGraduate>()
+                            .eq("certificate_num", certificateNum));
+            if (dbInfo.equals(graduateInfo)) {
+                return graduateInfo;
+            } else {
+                throw new CustomizeException(ErrorCode.DATA_UNBELIEVABLE);
+            }
         } else {
             return null;
         }

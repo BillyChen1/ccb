@@ -190,7 +190,11 @@ public class StudentGraduateController {
                                       @RequestParam("identityNum") String identityNum) {
         //验证成功后记得删除redis中第一次签名得到的中间结果
         StudentGraduate graduateInfo = studentGraduateService.getValidGraduateInfo(certificateNum, university, identityNum);
-        return BaseResult.successWithData(graduateInfo);
+        if (graduateInfo == null) {
+            return BaseResult.failWithErrorCode(ErrorCode.DATA_NOT_FOUND);
+        } else {
+            return BaseResult.successWithData(graduateInfo);
+        }
     }
 }
 

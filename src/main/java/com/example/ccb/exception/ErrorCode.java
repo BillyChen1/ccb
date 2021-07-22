@@ -9,7 +9,8 @@ public enum ErrorCode implements IErrorCode{
     LOGIN_FAILED(206, "登陆失败"),
     KEY_NOT_FOUND(207, "无法找到密钥"),
     DATA_UNBELIEVABLE(208, "查询的数据已经被篡改"),
-    INNER_ERROR(209, "系统内部错误");
+    INNER_ERROR(209, "系统内部错误"),
+    DATA_NOT_FOUND(210, "查询结果为空");
 
 
     private Integer code;
