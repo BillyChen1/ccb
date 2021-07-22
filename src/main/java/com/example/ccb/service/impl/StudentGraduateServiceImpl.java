@@ -54,12 +54,17 @@ public class StudentGraduateServiceImpl extends ServiceImpl<StudentGraduateMappe
     @Override
     public StudentGraduate getValidGraduateInfo(String certificateNum, String university, String identityNum) {
         //1. 根据学历证书编号在区块链查找对应区块
+        //区块链不可信直接返回异常
+        if (!chain.isChainValid()) {
+            throw new CustomizeException(ErrorCode.DATA_UNBELIEVABLE);
+        }
+
         Block block = chain.findBlockbByCertificateNum(certificateNum);
         if (block == null) {
             return null;
         }
         String jsonString = null;
-        //2. 使用公钥对内容进行解密，解密失败则说明被篡改，直接返回错误
+        //2. 使用公钥对内容进行解密，解密失败则说明不是学生或者学校本人操作，数据不安全，直接返回错误
         String encryptedGraduateData = block.getData();
         //先取出学生的公钥进行解密
         try {
@@ -96,6 +101,8 @@ public class StudentGraduateServiceImpl extends ServiceImpl<StudentGraduateMappe
         //4. 验证对象的university和identityNum是否正确，正确则返回该条信息
         if (university.equals(graduateInfo.getUniversity())
             && identityNum.equals(graduateInfo.getIdentityNum())) {
+            //还需要和数据库的信息进行对比，如果不一致说明存在篡改风险
+
             return graduateInfo;
         } else {
             return null;
