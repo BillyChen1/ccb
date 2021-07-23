@@ -7,8 +7,10 @@ import cn.hutool.crypto.asymmetric.RSA;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.ccb.common.BaseResult;
+import com.example.ccb.common.BloomList;
 import com.example.ccb.common.NoobChain;
 import com.example.ccb.common.SignStatus;
+import com.example.ccb.dto.GraduateInfoReturnDTO;
 import com.example.ccb.dto.StudentSignDTO;
 import com.example.ccb.entity.StudentGrade;
 import com.example.ccb.entity.StudentGraduate;
@@ -51,6 +53,9 @@ public class StudentGraduateController {
     @Autowired
     private NoobChain noobChain;
 
+    @Autowired
+    private BloomList bloomList;
+
     @Value("${redis.publicKeyName}")
     private String pubKeyName;
 
@@ -84,11 +89,16 @@ public class StudentGraduateController {
         String graduateJSONString = JSON.toJSONString(studentGraduate);
         byte[] encrypt = rsa.encrypt(graduateJSONString, KeyType.PrivateKey);
         //密文先暂时存入redis, key为毕业信息编号，将来学生签名的时候从里面取
-        redisUtil.set(studentGraduate.getId()+"", Base64.getEncoder().encodeToString(encrypt), -1);
+        redisUtil.set(studentGraduate.getId()+"", Base64.getEncoder().encodeToString(encrypt), 300);
 //        noobChain.add(Base64.getEncoder().encodeToString(encrypt), studentGraduate.getCertificateNum());
 
         log.info("毕业录入成功");
-        return BaseResult.success();
+        String certificateNum = studentGraduate.getCertificateNum();
+        StudentGraduate dbGraduate = studentGraduateService.getOne(new QueryWrapper<StudentGraduate>().eq("certificate_num", certificateNum));
+        GraduateInfoReturnDTO graduateInfoReturnDTO = new GraduateInfoReturnDTO();
+        graduateInfoReturnDTO.setId(dbGraduate.getId());
+        graduateInfoReturnDTO.setCertificateNum(certificateNum);
+        return BaseResult.successWithData(graduateInfoReturnDTO);
     }
 
     @GetMapping("")
@@ -176,6 +186,8 @@ public class StudentGraduateController {
         byte[] encrypt = rsa.encrypt(encyptedGraduateInfo, KeyType.PrivateKey);
         //签名后上链
         noobChain.add(Base64.getEncoder().encodeToString(encrypt), graduateInfo.getCertificateNum());
+        int blockId = noobChain.getBlockchain().size() - 1;
+        bloomList.addKey(graduateInfo.getCertificateNum(), blockId);
         //修改数据库中该条毕业信息的状态
         graduateInfo.setSignStatus(SignStatus.STUDENT_SIGN);
         studentGraduateService.updateById(graduateInfo);
@@ -188,7 +200,6 @@ public class StudentGraduateController {
     public BaseResult enterpriseCheck(@RequestParam("certificateNum") String certificateNum,
                                       @RequestParam("university") String university,
                                       @RequestParam("identityNum") String identityNum) {
-        //验证成功后记得删除redis中第一次签名得到的中间结果
         StudentGraduate graduateInfo = studentGraduateService.getValidGraduateInfo(certificateNum, university, identityNum);
         if (graduateInfo == null) {
             return BaseResult.failWithErrorCode(ErrorCode.DATA_NOT_FOUND);

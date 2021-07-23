@@ -53,7 +53,7 @@ public class NoobChain {
     }
 
 
-    public Block findBlockbByCertificateNum(String certificateNum) {
+    public Block findBlockByCertificateNum(String certificateNum) {
         for (Block block : blockchain) {
             if (block.getCertificateNum().equals(certificateNum)) {
                 return block;
@@ -81,11 +81,11 @@ public class NoobChain {
                 System.out.println("Previous Hashes not equal");
                 return false;
             }
-            //check if hash is solved
-            if(!currentBlock.hash.substring( 0, difficulty).equals(hashTarget)) {
-                System.out.println("This block hasn't been mined");
-                return false;
-            }
+//            //check if hash is solved
+//            if(!currentBlock.hash.substring( 0, difficulty).equals(hashTarget)) {
+//                System.out.println("This block hasn't been mined");
+//                return false;
+//            }
         }
         return true;
     }

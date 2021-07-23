@@ -7,7 +7,7 @@ public enum ErrorCode implements IErrorCode{
     DELETE_FAILED(204, "删除记录失败"),
     REGISTER_FAILED(205, "注册失败"),
     LOGIN_FAILED(206, "登陆失败"),
-    KEY_NOT_FOUND(207, "无法找到密钥"),
+    KEY_NOT_FOUND(207, "密钥已失效，请联系学校重新签名"),
     DATA_UNBELIEVABLE(208, "查询的数据已经被篡改"),
     INNER_ERROR(209, "系统内部错误"),
     DATA_NOT_FOUND(210, "查询结果为空");

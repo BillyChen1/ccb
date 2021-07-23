@@ -21,8 +21,8 @@ public class Block {
         this.data = data;
         this.previousHash = previousHash;
         this.timeStamp = new Date().getTime();
-        this.hash = calculateHash(); //Making sure we do this after we set the other values.
         this.certificateNum = certificateNum;
+        this.hash = calculateHash(); //Making sure we do this after we set the other values.
     }
 
     //Calculate new hash based on blocks contents
@@ -31,7 +31,8 @@ public class Block {
                 previousHash +
                         Long.toString(timeStamp) +
                         Integer.toString(nonce) +
-                        data
+                        data +
+                        certificateNum
         );
         return calculatedhash;
     }
