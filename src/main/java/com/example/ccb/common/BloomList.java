@@ -16,13 +16,13 @@ import java.util.List;
 @Component
 public class BloomList {
 
-    private List<BloomFilter<String>> list;
+    private List<BloomFilter<CharSequence>> list;
 
     //区块数
     private int blockCount = 0;
 
     public BloomList() {
-        this.list = new ArrayList<>(365);
+        this.list = new ArrayList<BloomFilter<CharSequence>>(365);
         for (int i = 0; i < 365; i++) {
             list.add(BloomFilter.create(Funnels.stringFunnel(Charsets.UTF_8), 5000));
         }
@@ -83,10 +83,10 @@ public class BloomList {
         blockCount++;
         int i = 0;
         while (blockId - (1 << i) >= 0) {
-            blockId -= (1 << i);
+            int filterId = blockId - (1 << i);
             //向区块对应的布隆过滤器添加Key
-            list.get(blockId).put(key);
-            i--;
+            list.get(filterId).put(key);
+            i++;
         }
     }
 
