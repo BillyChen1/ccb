@@ -22,9 +22,9 @@ public class BloomList {
     private int blockCount = 0;
 
     public BloomList() {
-        this.list = new ArrayList<BloomFilter<CharSequence>>(365);
-        for (int i = 0; i < 365; i++) {
-            list.add(BloomFilter.create(Funnels.stringFunnel(Charsets.UTF_8), 5000));
+        this.list = new ArrayList<BloomFilter<CharSequence>>(10000);
+        for (int i = 0; i < 10000; i++) {
+            list.add(BloomFilter.create(Funnels.stringFunnel(Charsets.UTF_8), 5000, 0.000001));
         }
     }
 
