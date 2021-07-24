@@ -5,6 +5,7 @@ import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.ccb.common.BaseResult;
 import com.example.ccb.dto.LoginSuccessDTO;
+import com.example.ccb.dto.UserLoginDTO;
 import com.example.ccb.entity.User;
 import com.example.ccb.exception.ErrorCode;
 import com.example.ccb.service.IUserService;
@@ -38,7 +39,8 @@ public class UserController {
     public BaseResult register(@RequestBody User user) {
         //判断是否已经注册
         User dbUser = userService.getOne(
-                new QueryWrapper<User>().eq("account_name", user.getAccountName()));
+                new QueryWrapper<User>().eq("account_name", user.getAccountName())
+                .or().eq("identity_num", user.getIdentityNum()));
         if (dbUser != null) {
             //return BaseResult.failWithCodeAndMsg(1, "用户已注册");
             return BaseResult.failWithErrorCode(ErrorCode.REGISTER_FAILED);
@@ -57,7 +59,7 @@ public class UserController {
 
     @PostMapping("/login")
     @ApiOperation("登录 id不用传")
-    public BaseResult login(@RequestBody User user) {
+    public BaseResult login(@RequestBody UserLoginDTO user) {
         User dbUser = userService.getOne(
                 new QueryWrapper<User>().eq("account_name", user.getAccountName()));
         if (dbUser == null) {
@@ -69,6 +71,7 @@ public class UserController {
             LoginSuccessDTO loginSuccessDTO = new LoginSuccessDTO();
             loginSuccessDTO.setAccountName(dbUser.getAccountName());
             loginSuccessDTO.setRole(dbUser.getRole());
+            loginSuccessDTO.setIdentityNum(dbUser.getIdentityNum());
             return BaseResult.successWithData(loginSuccessDTO);
         }
 //        return BaseResult.failWithCodeAndMsg(1, "登陆失败");

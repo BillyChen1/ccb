@@ -35,5 +35,8 @@ public class User implements Serializable {
     @ApiModelProperty(value = "0管理员1企业2高校3学生")
     private Integer role;
 
+    @ApiModelProperty(value = "身份证号码")
+    private String identityNum;
+
 
 }
