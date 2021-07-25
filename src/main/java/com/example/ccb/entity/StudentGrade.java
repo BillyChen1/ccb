@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javafx.scene.chart.ValueAxis;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -39,7 +40,7 @@ public class StudentGrade implements Serializable {
     private String teacher;
 
     @ApiModelProperty(value = "课程号")
-    private Integer courseNum;
+    private String courseNum;
 
     @ApiModelProperty(value = "课程名")
     private String courseName;
@@ -47,5 +48,13 @@ public class StudentGrade implements Serializable {
     @ApiModelProperty(value = "成绩")
     private Integer score;
 
+    @ApiModelProperty(value = "学历层次")
+    private String education;
+
+    @ApiModelProperty(value = "身份证号")
+    private String identityNum;
+
+    @ApiModelProperty(value = "学校")
+    private String university;
 
 }

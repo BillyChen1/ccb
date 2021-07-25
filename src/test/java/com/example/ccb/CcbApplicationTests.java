@@ -4,10 +4,6 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
-import com.example.ccb.common.BaseResult;
-import com.example.ccb.dto.GraduateInfoReturnDTO;
-import com.example.ccb.dto.StudentSignDTO;
-import com.example.ccb.entity.StudentGraduate;
 import com.example.ccb.service.IStudentGraduateService;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -16,9 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
-import sun.net.www.http.HttpClient;
-
-import java.util.LinkedHashMap;
 
 
 @SpringBootTest

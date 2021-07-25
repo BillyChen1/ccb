@@ -3,23 +3,19 @@ package com.example.ccb.service.impl;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.ccb.common.Block;
 import com.example.ccb.common.BloomList;
 import com.example.ccb.common.NoobChain;
 import com.example.ccb.common.SignStatus;
-import com.example.ccb.entity.StudentGrade;
 import com.example.ccb.entity.StudentGraduate;
 import com.example.ccb.exception.CustomizeException;
 import com.example.ccb.exception.ErrorCode;
-import com.example.ccb.mapper.StudentGradeMapper;
 import com.example.ccb.mapper.StudentGraduateMapper;
 import com.example.ccb.service.IStudentGraduateService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.ccb.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -125,7 +121,7 @@ public class StudentGraduateServiceImpl extends ServiceImpl<StudentGraduateMappe
             StudentGraduate dbInfo = studentGraduateMapper.selectOne(
                     new QueryWrapper<StudentGraduate>()
                             .eq("certificate_num", certificateNum));
-            if (dbInfo.equals(graduateInfo)) {
+            if (dbInfo != null && dbInfo.equals(graduateInfo)) {
                 return graduateInfo;
             } else {
                 throw new CustomizeException(ErrorCode.DATA_UNBELIEVABLE);

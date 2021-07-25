@@ -65,8 +65,15 @@ public class StudentGraduate implements Serializable {
     @ApiModelProperty(value = "学历层次")
     private String education;
 
-    @ApiModelProperty(value = "0未签名1学校已签名2学生已签名3企业已认证")
+    @ApiModelProperty(value = "0未签名1学校已签名2学生已签名3待定")
     private Integer signStatus;
 
+    @ApiModelProperty(value = "民族")
+    private String folk;
 
+    @ApiModelProperty(value = "学制")
+    private String schoolSystem;
+
+    @ApiModelProperty(value = "班级")
+    private String studentClass;
 }

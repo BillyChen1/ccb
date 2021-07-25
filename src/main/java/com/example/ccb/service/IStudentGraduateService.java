@@ -1,8 +1,7 @@
 package com.example.ccb.service;
 
-import com.example.ccb.entity.StudentGrade;
-import com.example.ccb.entity.StudentGraduate;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.ccb.entity.StudentGraduate;
 
 /**
  * <p>

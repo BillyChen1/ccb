@@ -10,7 +10,8 @@ public enum ErrorCode implements IErrorCode{
     KEY_NOT_FOUND(207, "密钥已失效，请联系学校重新签名"),
     DATA_UNBELIEVABLE(208, "查询的数据已经被篡改"),
     INNER_ERROR(209, "系统内部错误"),
-    DATA_NOT_FOUND(210, "查询结果为空");
+    DATA_NOT_FOUND(210, "查询结果为空"),
+    INSERT_FAILED(211, "信息录入失败");
 
 
     private Integer code;

@@ -4,11 +4,10 @@ package com.example.ccb.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.ccb.common.BaseResult;
 import com.example.ccb.entity.StudentGrade;
-import com.example.ccb.entity.StudentGraduate;
-import com.example.ccb.entity.StudentIn;
 import com.example.ccb.service.IStudentGradeService;
-import com.example.ccb.service.IStudentInService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,20 +41,31 @@ public class StudentGradeController {
     }
 
     @GetMapping("")
-    @ApiOperation("根据学年和课程号查询成绩信息列表,如果两个参数为空，则返回全部信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "term", value = "学年"),
+            @ApiImplicitParam(name = "courseNum", value = "课程号"),
+            @ApiImplicitParam(name = "studentNum", value = "学号"),
+            @ApiImplicitParam(name = "education", value = "学历层次")
+    })
+    @ApiOperation("根据一定条件成绩信息列表")
     public BaseResult listStudentGrade(@RequestParam(value = "term", required = false) Integer term,
-                                    @RequestParam(value = "courseNum", required = false) Integer courseNum) {
-        if (term == null && courseNum == null) {
-            return BaseResult.successWithData(studentGradeService.list());
-        } else if (courseNum == null) {
-            List<StudentGrade> list = studentGradeService.list(
-                    new QueryWrapper<StudentGrade>().eq("term", term)
-            );
-            return BaseResult.successWithData(list);
-        }
+                                       @RequestParam(value = "courseNum", required = false) Integer courseNum,
+                                       @RequestParam(value = "studentNum", required = false) String studentNum,
+                                       @RequestParam(value = "education", required = false) String education) {
+
         QueryWrapper<StudentGrade> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("term", term)
-                .eq("course_num", courseNum);
+        if (term != null) {
+            queryWrapper.eq("term", term);
+        }
+        if (courseNum != null) {
+            queryWrapper.eq("course_num", courseNum);
+        }
+        if (studentNum != null) {
+            queryWrapper.eq("student_num", studentNum);
+        }
+        if (education != null) {
+            queryWrapper.eq("education", education);
+        }
         List<StudentGrade> list = studentGradeService.list(queryWrapper);
         return BaseResult.successWithData(list);
     }
