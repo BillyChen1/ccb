@@ -3,6 +3,8 @@ package com.example.ccb.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javafx.scene.chart.ValueAxis;
@@ -56,5 +58,11 @@ public class StudentGrade implements Serializable {
 
     @ApiModelProperty(value = "学校")
     private String university;
+
+    @ApiModelProperty(value = "学分")
+    private Double credit;
+
+    @ApiModelProperty(value = "课程类型必修选修")
+    private String courseType;
 
 }

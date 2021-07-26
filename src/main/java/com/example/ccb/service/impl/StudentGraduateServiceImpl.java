@@ -8,9 +8,11 @@ import com.example.ccb.common.Block;
 import com.example.ccb.common.BloomList;
 import com.example.ccb.common.NoobChain;
 import com.example.ccb.common.SignStatus;
+import com.example.ccb.entity.StudentGrade;
 import com.example.ccb.entity.StudentGraduate;
 import com.example.ccb.exception.CustomizeException;
 import com.example.ccb.exception.ErrorCode;
+import com.example.ccb.mapper.StudentGradeMapper;
 import com.example.ccb.mapper.StudentGraduateMapper;
 import com.example.ccb.service.IStudentGraduateService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -21,6 +23,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -36,6 +41,9 @@ public class StudentGraduateServiceImpl extends ServiceImpl<StudentGraduateMappe
 
     @Autowired
     private StudentGraduateMapper studentGraduateMapper;
+
+    @Autowired
+    private StudentGradeMapper studentGradeMapper;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -110,7 +118,6 @@ public class StudentGraduateServiceImpl extends ServiceImpl<StudentGraduateMappe
 
         //3. 把解密得到的json串转化为对象
         StudentGraduate graduateInfo = JSON.parseObject(jsonString, StudentGraduate.class);
-        //记得删除redis中的中间加密结果
 
 
         //4. 验证对象的university和identityNum是否正确，正确则返回该条信息
@@ -129,5 +136,36 @@ public class StudentGraduateServiceImpl extends ServiceImpl<StudentGraduateMappe
         } else {
             return null;
         }
+    }
+
+    @Override
+    public boolean canGraduate(StudentGraduate studentGraduate) {
+        //寻找该学生学历层次下的所有必修成绩
+        List<StudentGrade> list = studentGradeMapper.selectList(new QueryWrapper<StudentGrade>()
+                                        .eq("student_num", studentGraduate.getStudentNum())
+                                        .eq("education", studentGraduate.getEducation())
+                                        .eq("course_type", "必修"));
+        if (list.isEmpty()) {
+            return false;
+        }
+        //key:课程号 value:该课程的最好成绩
+        Map<String, Integer> map = new HashMap<>();
+        for (StudentGrade studentGrade : list) {
+            if (map.get(studentGrade.getCourseNum()) == null) {
+                map.put(studentGrade.getCourseNum(), studentGrade.getScore());
+            } else {
+                //如果哈希表中已经存在课程号，且当前成绩更好，则将用当前的成绩将其覆盖
+                Integer higherScore = Math.max(map.get(studentGrade.getCourseNum()), studentGrade.getScore());
+                map.put(studentGrade.getCourseNum(), higherScore);
+            }
+        }
+
+        //最后遍历哈希表，如果仍存在不及格，则无法毕业
+        for (String courseNum : map.keySet()) {
+            if (map.get(courseNum) < 60) {
+                return false;
+            }
+        }
+        return true;
     }
 }

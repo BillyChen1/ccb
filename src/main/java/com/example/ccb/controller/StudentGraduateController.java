@@ -249,6 +249,13 @@ public class StudentGraduateController {
         if (studentGraduate == null) {
             return BaseResult.failWithErrorCode(ErrorCode.GRADUATE_INFO_NOT_FOUNT);
         }
+        if (studentGraduate.getSignStatus() != SignStatus.UN_SIGN) {
+            return BaseResult.failWithErrorCode(ErrorCode.SIGN_FAILED);
+        }
+        //判断学生是否满足毕业条件
+        if (!studentGraduateService.canGraduate(studentGraduate)) {
+            return BaseResult.failWithErrorCode(ErrorCode.CAN_NOT_GRADUATE);
+        }
         //学校对毕业录入信息进行签名
         //学校公钥和私钥存在redis中
         //公钥的Key为schoolPub 私钥key为schoolPri

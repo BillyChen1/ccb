@@ -11,7 +11,8 @@ public enum ErrorCode implements IErrorCode{
     DATA_UNBELIEVABLE(208, "查询的数据已经被篡改"),
     INNER_ERROR(209, "系统内部错误"),
     DATA_NOT_FOUND(210, "查询结果为空"),
-    INSERT_FAILED(211, "信息录入失败");
+    INSERT_FAILED(211, "信息录入失败"),
+    CAN_NOT_GRADUATE(212, "不满足毕业条件");
 
 
     private Integer code;

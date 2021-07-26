@@ -14,4 +14,6 @@ import com.example.ccb.entity.StudentGraduate;
 public interface IStudentGraduateService extends IService<StudentGraduate> {
 
     StudentGraduate getValidGraduateInfo(String certificateNum, String university, String identityNum);
+
+    boolean canGraduate(StudentGraduate studentGraduate);
 }
