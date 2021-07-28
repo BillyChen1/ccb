@@ -69,11 +69,15 @@ public class StudentGraduateServiceImpl extends ServiceImpl<StudentGraduateMappe
         }
         //含有target的区块号
         int blockId = -1;
-        //0号1号特殊处理
+        //0号1号2号3号特殊处理
         if (certificateNum.equals(chain.getBlockchain().get(0).getCertificateNum())) {
             blockId = 0;
         } else if (certificateNum.equals(chain.getBlockchain().get(1).getCertificateNum())) {
             blockId = 1;
+        } else if (certificateNum.equals(chain.getBlockchain().get(2).getCertificateNum())) {
+            blockId = 2;
+        } else if (certificateNum.equals(chain.getBlockchain().get(3).getCertificateNum())) {
+            blockId = 3;
         } else {
             blockId = bloomList.search(certificateNum);
         }
